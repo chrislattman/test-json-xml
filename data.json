@@ -1,0 +1,9 @@
+{
+    "index": 1,
+    "firstName": "John",
+    "lastName": "Smith",
+    "phoneNumbers": [
+        { "phoneType": "Home", "number": "888-888-8888" },
+        { "phoneType": "Cell", "number": "999-999-9999" }
+    ]
+}

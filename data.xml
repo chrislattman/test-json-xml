@@ -1,0 +1,7 @@
+<index>1</index>
+<firstName>John</firstName>
+<lastName>Smith</lastName>
+<phoneNumbers>
+    <phoneType>Home</phoneType> <number>888-888-8888</number>
+    <phoneType>Cell</phoneType> <number>999-999-9999</number>
+</phoneNumbers>
