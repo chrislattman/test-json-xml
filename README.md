@@ -16,3 +16,5 @@ While both are used for the same purpose, there are key differences:
 - JSON doesn't support comments, but XML does (`<!-- -->`)
 
 This repository demonstrates JSON and XML decoding and encoding in Java, Python, Node.js, and Go. Use the provided Makefile to run the examples.
+
+- For C, the [Jansson](https://github.com/akheron/jansson) library can be used for JSON parsing and the [libxml2](https://gitlab.gnome.org/GNOME/libxml2) library can be used for XML parsing
