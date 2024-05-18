@@ -39,14 +39,14 @@ else:
 
 # mapping JSON string to class object and vice versa
 class PhoneNumber(BaseModel):
-    phone_type: str
+    phoneType: str
     number: str
 
 class Data(BaseModel):
     index: int
-    first_name: str
-    last_name: str
-    phone_numbers: List[PhoneNumber]
+    firstName: str
+    lastName: str
+    phoneNumbers: List[PhoneNumber]
 
 obj = Data.model_validate_json(json_string)
 print(obj)

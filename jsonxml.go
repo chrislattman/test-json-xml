@@ -99,6 +99,9 @@ func main() {
 		fmt.Println("Unequal JSON.")
 	}
 
+	fmt.Println(j)
+	fmt.Println(string(serialized))
+
 	// XML
 
 	xmldata, err := os.ReadFile("data.xml")
