@@ -6,80 +6,80 @@ from pydantic import BaseModel
 
 # JSON
 
-jsonString = open("data.json").read()
+json_string = open("data.json").read()
 
-data = json.loads(jsonString)
+data = json.loads(json_string)
 index = data["index"]
-firstName = data["firstName"]
-lastName = data["lastName"]
-phoneNumbers = data["phoneNumbers"]
-phoneTypes = []
+first_name = data["firstName"]
+last_name = data["lastName"]
+phone_numbers = data["phoneNumbers"]
+phone_types = []
 numbers = []
-for phone in phoneNumbers:
-    phoneTypes.append(phone["phoneType"])
+for phone in phone_numbers:
+    phone_types.append(phone["phoneType"])
     numbers.append(phone["number"])
 
-newdata = {}
-newdata["index"] = index
-newdata["firstName"] = firstName
-newdata["lastName"] = lastName
-newphoneNumbers = []
-for i in range(len(phoneNumbers)):
-    newphone = {}
-    newphone["phoneType"] = phoneTypes[i]
-    newphone["number"] = numbers[i]
-    newphoneNumbers.append(newphone)
-newdata["phoneNumbers"] = newphoneNumbers
+new_data = {}
+new_data["index"] = index
+new_data["firstName"] = first_name
+new_data["lastName"] = last_name
+new_phone_numbers = []
+for i in range(len(phone_numbers)):
+    new_phone = {}
+    new_phone["phoneType"] = phone_types[i]
+    new_phone["number"] = numbers[i]
+    new_phone_numbers.append(new_phone)
+new_data["phoneNumbers"] = new_phone_numbers
 
 # Note: JSON requires double-quotes ("") for strings
-if json.dumps(data) == json.dumps(newdata):
+if json.dumps(data) == json.dumps(new_data):
     print("Equal JSON!")
 else:
     print("Unequal JSON.")
 
 # mapping JSON string to class object and vice versa
 class PhoneNumber(BaseModel):
-    phoneType: str
+    phone_type: str
     number: str
 
 class Data(BaseModel):
     index: int
-    firstName: str
-    lastName: str
-    phoneNumbers: List[PhoneNumber]
+    first_name: str
+    last_name: str
+    phone_numbers: List[PhoneNumber]
 
-obj = Data.model_validate_json(jsonString)
+obj = Data.model_validate_json(json_string)
 print(obj)
 print(obj.model_dump_json())
 
 # XML
 
-xmlString = open("data.xml").read()
+xml_string = open("data.xml").read()
 
-root = ET.fromstring(xmlString)
-xmlindex = root[0].text
-xmlfirstName = root[1].text
-xmllastName = root[2].text
-xmlphoneTypes = []
-xmlnumbers = []
+root = ET.fromstring(xml_string)
+xml_index = root[0].text
+xml_first_name = root[1].text
+xml_last_name = root[2].text
+xml_phone_types = []
+xml_numbers = []
 for child in root[3]:
-    xmlphoneTypes.append(child[0].text)
-    xmlnumbers.append(child[1].text)
+    xml_phone_types.append(child[0].text)
+    xml_numbers.append(child[1].text)
 
-newroot = ET.Element("data")
-ET.SubElement(newroot, "index").text = xmlindex
-ET.SubElement(newroot, "firstName").text = xmlfirstName
-ET.SubElement(newroot, "lastName").text = xmllastName
-newxmlphoneNumbers = ET.SubElement(newroot, "phoneNumbers")
+new_root = ET.Element("data")
+ET.SubElement(new_root, "index").text = xml_index
+ET.SubElement(new_root, "firstName").text = xml_first_name
+ET.SubElement(new_root, "lastName").text = xml_last_name
+new_xml_phone_numbers = ET.SubElement(new_root, "phoneNumbers")
 for i in range(len(root[3])):
-    newxmlphoneNumber = ET.SubElement(newxmlphoneNumbers, "phoneNumber")
-    ET.SubElement(newxmlphoneNumber, "phoneType").text = xmlphoneTypes[i]
-    ET.SubElement(newxmlphoneNumber, "number").text = xmlnumbers[i]
+    new_xml_phone_number = ET.SubElement(new_xml_phone_numbers, "phoneNumber")
+    ET.SubElement(new_xml_phone_number, "phoneType").text = xml_phone_types[i]
+    ET.SubElement(new_xml_phone_number, "number").text = xml_numbers[i]
 
 # Remove XML declaration from initial XML string and remove all whitespace
-oldxmlstring = "".join(xmlString.splitlines()[1:]).replace(" ", "").replace("\t", "")
+old_xml_string = "".join(xml_string.splitlines()[1:]).replace(" ", "").replace("\t", "")
 
-if oldxmlstring == ET.tostring(newroot).decode():
+if old_xml_string == ET.tostring(new_root).decode():
     print("Equal XML!")
 else:
     print("Unequal XML.")

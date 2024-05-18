@@ -43,17 +43,17 @@ type dataXML struct {
 func main() {
 	// JSON
 
-	jsondata, err := os.ReadFile("data.json")
+	jsonbytes, err := os.ReadFile("data.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var j data
-	json.Unmarshal(jsondata, &j)
+	json.Unmarshal(jsonbytes, &j)
 
 	newdata, _ := json.Marshal(j)
 
-	oldjsonstring := string(jsondata)
+	oldjsonstring := string(jsonbytes)
 	oldjsonstring = strings.ReplaceAll(oldjsonstring, " ", "")
 	oldjsonstring = strings.ReplaceAll(oldjsonstring, "\n", "")
 	oldjsonstring = strings.ReplaceAll(oldjsonstring, "\t", "") // just in case
