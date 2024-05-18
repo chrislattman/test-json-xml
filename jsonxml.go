@@ -9,35 +9,35 @@ import (
 	"strings"
 )
 
-type phoneNumber struct {
-	PhoneType string
-	Number    string
+type PhoneNumber struct {
+	PhoneType string `json:"phoneType"`
+	Number    string `json:"number"`
 }
 
-type data struct {
-	Index        int
-	FirstName    string
-	LastName     string
-	PhoneNumbers []phoneNumber
+type Data struct {
+	Index        float64       `json:"index"`
+	FirstName    string        `json:"firstName"`
+	LastName     string        `json:"lastName"`
+	PhoneNumbers []PhoneNumber `json:"phoneNumbers"`
 }
 
-type phoneNumberXML struct {
+type PhoneNumberXML struct {
 	XMLName   xml.Name `xml:"phoneNumber"`
 	PhoneType string   `xml:"phoneType"`
 	Number    string   `xml:"number"`
 }
 
-type phoneNumbersXML struct {
+type PhoneNumbersXML struct {
 	XMLName     xml.Name         `xml:"phoneNumbers"`
-	PhoneNumber []phoneNumberXML `xml:"phoneNumber"`
+	PhoneNumber []PhoneNumberXML `xml:"phoneNumber"`
 }
 
-type dataXML struct {
+type DataXML struct {
 	XMLName      xml.Name        `xml:"data"`
 	Index        int             `xml:"index"`
 	FirstName    string          `xml:"firstName"`
 	LastName     string          `xml:"lastName"`
-	PhoneNumbers phoneNumbersXML `xml:"phoneNumbers"`
+	PhoneNumbers PhoneNumbersXML `xml:"phoneNumbers"`
 }
 
 func main() {
@@ -48,10 +48,40 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var j data
+	var data map[string]interface{}
+	json.Unmarshal(jsonbytes, &data)
+	index := data["index"].(float64)
+	firstName := data["firstName"].(string)
+	lastName := data["lastName"].(string)
+	phoneNumbers := data["phoneNumbers"].([]interface{})
+	var phoneTypes, numbers []string
+	for i := 0; i < len(phoneNumbers); i++ {
+		phone := phoneNumbers[i].(map[string]interface{})
+		phoneTypes = append(phoneTypes, phone["phoneType"].(string))
+		numbers = append(numbers, phone["number"].(string))
+	}
+
+	var newdata Data
+	newdata.Index = index
+	newdata.FirstName = firstName
+	newdata.LastName = lastName
+	for i := 0; i < len(phoneNumbers); i++ {
+		var newphone PhoneNumber
+		newphone.PhoneType = phoneTypes[i]
+		newphone.Number = numbers[i]
+		newdata.PhoneNumbers = append(newdata.PhoneNumbers, newphone)
+	}
+	// While these byte slices may not be exactly identical, they
+	// represent the same JS object and are therefore semantically equal
+	// (this is due to the fields in data.json not being in alphabetical order)
+	// newdatabytes, _ := json.Marshal(newdata)
+	// databytes, _ := json.Marshal(data)
+
+	// mapping JSON string to struct and vice versa
+	var j Data
 	json.Unmarshal(jsonbytes, &j)
 
-	newdata, _ := json.Marshal(j)
+	serialized, _ := json.Marshal(j)
 
 	oldjsonstring := string(jsonbytes)
 	oldjsonstring = strings.ReplaceAll(oldjsonstring, " ", "")
@@ -61,14 +91,13 @@ func main() {
 	// need to make lowercase due to Go variable naming conventions requiring
 	// first letter to be capitalized
 	oldjsonstring = strings.ToLower(oldjsonstring)
-	newjsonstring := strings.ToLower(string(newdata))
+	newjsonstring := strings.ToLower(string(serialized))
 
 	if oldjsonstring == newjsonstring {
 		fmt.Println("Equal JSON!")
 	} else {
 		fmt.Println("Unequal JSON.")
 	}
-	fmt.Println("Go already maps JSON bytes to a struct")
 
 	// XML
 
@@ -77,7 +106,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var x dataXML
+	var x DataXML
 	xml.Unmarshal(xmldata, &x)
 
 	newxmldata, _ := xml.Marshal(x)
